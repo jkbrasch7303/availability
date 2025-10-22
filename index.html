@@ -3,9 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <title>Availability Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      max-width: 500px;
+      width: 90%;
+      margin: 20px;
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    h2 {
+      color: #0078D4;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 15px;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #005ea2;
+    }
+    .readonly {
+      background-color: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
-  <h2>Availability Form Setup Success</h2>
-  <p>If you can see this page, your hosting works! ✅</p>
+  <div class="container">
+    <h2>Appointment Availability</h2>
+
+    <!-- Read-only system fields -->
+    <label>Account Name</label>
+    <input type="text" id="accountName" class="readonly" readonly>
+
+    <label>Account Moniker</label>
+    <input type="text" id="accountMoniker" class="readonly" readonly>
+
+    <label>Vendor</label>
+    <input type="text" id="vendor" class="readonly" readonly>
+
+    <label>Month of Appointment</label>
+    <input type="text" id="appointmentMonth" class="readonly" readonly>
+
+    <!-- Editable user fields -->
+    <label>Appointment Attendee(s)</label>
+    <input type="text" id="attendees" placeholder="Enter attendee name(s)">
+
+    <label>Availability Dates</label>
+    <select id="availabilityDates">
+      <option value="">Select availability</option>
+    </select>
+
+    <label>Additional Notes (optional)</label>
+    <textarea id="notes" rows="4" placeholder="Any additional information"></textarea>
+
+    <button type="submit">Submit Availability</button>
+  </div>
 </body>
 </html>
