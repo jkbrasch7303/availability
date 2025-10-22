@@ -1,99 +1,341 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Availability Form</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Store Visit Availability</title>
   <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f2f2;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+    :root {
+      --brand: #0078D4;
+      --muted: #6b6b6b;
+      --card-bg: #ffffff;
+      --page-bg: #f2f4f7;
     }
-    .container {
-      background: white;
-      max-width: 500px;
-      width: 90%;
-      margin: 20px;
-      padding: 25px 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    html,body{height:100%;margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--page-bg);color:#1b1b1b}
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:720px;background:var(--card-bg);border-radius:10px;box-shadow:0 8px 28px rgba(15,15,20,0.08);padding:26px}
+    header{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .brand-mark{width:46px;height:46px;border-radius:8px;background:linear-gradient(180deg,var(--brand),#005ea2);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px}
+    h1{font-size:20px;color:var(--brand);margin:0 0 6px}
+    p.lead{margin:0 0 14px;color:var(--muted);font-size:14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .full{grid-column:1/-1}
+    label{display:block;font-size:13px;color:#333;margin:8px 0 6px;font-weight:600}
+    input[type="text"], textarea {
+      width:100%;padding:10px;border:1px solid #dde2ea;border-radius:6px;background:#fafbfc;font-size:14px;box-sizing:border-box
     }
-    h2 {
-      color: #0078D4;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin-top: 12px;
-      font-weight: 600;
-    }
-    input[type="text"], textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 15px;
-    }
-    textarea {
-      resize: vertical;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 20px;
-      background-color: #0078D4;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 4px;
-    }
-    button:hover {
-      background-color: #005ea2;
-    }
-    .readonly {
-      background-color: #f0f0f0;
+    input[readonly]{background:#f6f7f9;color:#333}
+    .attendees-list{display:flex;flex-direction:column;gap:8px}
+    .attendee-row{display:flex;gap:8px}
+    .attendee-row input{flex:1}
+    .tiny-btn{padding:8px 10px;border-radius:6px;border:1px solid #d0d6dd;background:white;cursor:pointer}
+    .add-btn{background:transparent;color:var(--brand);border:1px dashed rgba(0,120,212,0.18);padding:8px;border-radius:6px}
+    .dates-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+    .date-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid #e6ebf2;background:#fbfdff}
+    .date-item input{width:18px;height:18px}
+    .notes{min-height:84px}
+    .status{color:var(--muted);font-size:13px;margin-left:8px}
+    .actions{display:flex;gap:12px;align-items:center;margin-top:16px}
+    button.primary{background:var(--brand);color:white;border:0;padding:12px 16px;border-radius:6px;cursor:pointer;font-weight:600}
+    button.primary:disabled{opacity:0.6;cursor:not-allowed}
+    @media (max-width:640px){
+      .grid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Appointment Availability</h2>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="title">
+      <header>
+        <div class="brand-mark">SV</div>
+        <div>
+          <h1 id="title">Store Visit Availability</h1>
+          <p class="lead">Select the dates you are available for the store visit (next month). Only people with the link can access this page.</p>
+        </div>
+      </header>
 
-    <!-- Read-only system fields -->
-    <label>Account Name</label>
-    <input type="text" id="accountName" class="readonly" readonly>
+      <form id="svForm" autocomplete="off" novalidate>
+        <div class="grid">
+          <div class="full">
+            <label for="accountName">Account Name</label>
+            <input id="accountName" name="accountName" type="text" readonly>
+          </div>
 
-    <label>Account Moniker</label>
-    <input type="text" id="accountMoniker" class="readonly" readonly>
+          <div>
+            <label for="storeNumber">Store Number</label>
+            <input id="storeNumber" name="storeNumber" type="text" readonly>
+          </div>
 
-    <label>Vendor</label>
-    <input type="text" id="vendor" class="readonly" readonly>
+          <div>
+            <label for="attendeesLabel">Appointment Attendee(s)</label>
+            <div id="attendees" class="attendees-list">
+              <!-- dynamic rows inserted here -->
+            </div>
+            <div style="margin-top:8px">
+              <button id="addAttendee" type="button" class="add-btn">+ Add another attendee</button>
+            </div>
+          </div>
 
-    <label>Month of Appointment</label>
-    <input type="text" id="appointmentMonth" class="readonly" readonly>
+          <div class="full">
+            <label id="availabilityLabel">Select availability (choose one or more)</label>
+            <div id="datesContainer" class="dates-grid" aria-live="polite">
+              <!-- date checkboxes inserted here -->
+            </div>
+            <div id="datesHelp" class="status" style="margin-top:8px"></div>
+          </div>
 
-    <!-- Editable user fields -->
-    <label>Appointment Attendee(s)</label>
-    <input type="text" id="attendees" placeholder="Enter attendee name(s)">
+          <div class="full">
+            <label for="comments">Comments (optional)</label>
+            <textarea id="comments" class="notes" placeholder="Any special instructions..."></textarea>
+          </div>
 
-    <label>Availability Dates</label>
-    <select id="availabilityDates">
-      <option value="">Select availability</option>
-    </select>
+          <div class="full actions">
+            <button id="submitBtn" class="primary" type="submit">Submit Availability</button>
+            <div id="resultMsg" class="status" aria-live="polite"></div>
+          </div>
+        </div>
 
-    <label>Additional Notes (optional)</label>
-    <textarea id="notes" rows="4" placeholder="Any additional information"></textarea>
-
-    <button type="submit">Submit Availability</button>
+        <!-- Hidden fields -->
+        <input type="hidden" id="rowId" name="id">
+        <input type="hidden" id="vendorHidden" name="vendor">
+        <input type="hidden" id="businessUnitEmail" name="businessUnitEmail">
+      </form>
+    </div>
   </div>
+
+<script>
+/* ============================
+   CONFIGURE THESE VALUES
+   ============================
+   Replace the placeholders below with:
+     - LOOKUP_ENDPOINT_URL : Power Automate HTTP (lookup) flow URL
+     - SUBMIT_ENDPOINT_URL : Power Automate HTTP (submit) flow URL
+     - SHARED_SECRET       : shared secret you will validate in the flow
+*/
+const LOOKUP_ENDPOINT_URL = "https://prod-00.westus.logic.azure.com:443/your-lookup-flow-url"; // <-- REPLACE
+const SUBMIT_ENDPOINT_URL = "https://prod-00.westus.logic.azure.com:443/your-submit-flow-url"; // <-- REPLACE
+const SHARED_SECRET = "REPLACE_WITH_SHARED_SECRET"; // <-- REPLACE
+/* ============================
+   End configuration
+   ============================ */
+
+function qparam(name){
+  try{
+    const u = new URL(window.location.href);
+    return u.searchParams.get(name);
+  }catch(e){
+    return null;
+  }
+}
+
+/* DOM refs */
+const accountNameEl = document.getElementById('accountName');
+const storeNumberEl = document.getElementById('storeNumber');
+const attendeesEl = document.getElementById('attendees');
+const addAttendeeBtn = document.getElementById('addAttendee');
+const datesContainer = document.getElementById('datesContainer');
+const commentsEl = document.getElementById('comments');
+const rowIdEl = document.getElementById('rowId');
+const vendorHiddenEl = document.getElementById('vendorHidden');
+const businessUnitEmailEl = document.getElementById('businessUnitEmail');
+const submitBtn = document.getElementById('submitBtn');
+const resultMsg = document.getElementById('resultMsg');
+const datesHelp = document.getElementById('datesHelp');
+
+let currentVendor = '';
+let currentRowId = null;
+
+/* ---------- Utilities ---------- */
+function isoDate(d){ return d.toISOString().split('T')[0]; }
+function formatLong(d){ return d.toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'}); }
+
+/* ---------- Attendee helpers ---------- */
+function addAttendee(name=''){
+  const row = document.createElement('div');
+  row.className = 'attendee-row';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = 'Attendee name';
+  input.value = name;
+  const remove = document.createElement('button');
+  remove.type = 'button';
+  remove.className = 'tiny-btn';
+  remove.textContent = 'Remove';
+  remove.addEventListener('click', ()=> { row.remove(); });
+  row.appendChild(input);
+  row.appendChild(remove);
+  attendeesEl.appendChild(row);
+  input.focus();
+}
+function getAttendees(){
+  return Array.from(attendeesEl.querySelectorAll('input')).map(i=>i.value.trim()).filter(Boolean);
+}
+
+/* ---------- Date generation ---------- */
+function getNextMonthDates(onlyTuesdays){
+  const now = new Date();
+  const nextMonthIndex = (now.getMonth() + 1) % 12;
+  const year = now.getMonth() === 11 ? now.getFullYear() + 1 : now.getFullYear();
+  const first = new Date(year, nextMonthIndex, 1);
+  const last = new Date(year, nextMonthIndex + 1, 0);
+  const arr = [];
+  for(let d = new Date(first); d <= last; d.setDate(d.getDate()+1)){
+    const day = d.getDay(); // Sun 0 .. Sat 6
+    if(onlyTuesdays){
+      if(day === 2) arr.push(new Date(d));
+    } else {
+      if(day !== 0 && day !== 6) arr.push(new Date(d)); // weekdays only
+    }
+  }
+  return arr;
+}
+
+/* ---------- Render date checkboxes ---------- */
+function renderDatesForVendor(vendor){
+  currentVendor = (vendor || '').toLowerCase();
+  const isHomeDepot = currentVendor.includes('home depot product authority') || currentVendor.includes('home depot');
+  const isLowes = currentVendor.includes("lowe") || currentVendor.includes("lowe's") || currentVendor.includes("lowes");
+  const onlyTues = isHomeDepot && !isLowes; // home depot -> tuesdays only; lowes -> any weekday
+  const dates = getNextMonthDates(onlyTues);
+  datesContainer.innerHTML = '';
+  if(dates.length === 0){
+    datesHelp.textContent = 'No available dates found for next month.';
+    return;
+  } else {
+    datesHelp.textContent = onlyTues ? 'Vendor requires Tuesdays only.' : 'Select any weekday.';
+  }
+  dates.forEach(d => {
+    const iso = isoDate(d);
+    const label = document.createElement('label');
+    label.className = 'date-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.name = 'availDate';
+    cb.value = iso;
+    const text = document.createElement('span');
+    text.textContent = ' ' + formatLong(d);
+    label.appendChild(cb);
+    label.appendChild(text);
+    datesContainer.appendChild(label);
+  });
+}
+
+/* ---------- Lookup logic: call Power Automate lookup flow ---------- */
+async function performLookup(id){
+  if(!id) throw new Error('Missing id');
+  resultMsg.textContent = 'Loading...';
+  try{
+    const res = await fetch(LOOKUP_ENDPOINT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id: id, secret: SHARED_SECRET })
+    });
+    if(!res.ok){
+      const txt = await res.text();
+      throw new Error(txt || res.statusText);
+    }
+    const data = await res.json();
+    // expected data: { accountName, storeNumber, vendor, businessUnitEmail, attendeeName? }
+    accountNameEl.value = data.accountName || '';
+    storeNumberEl.value = data.storeNumber || '';
+    vendorHiddenEl.value = data.vendor || '';
+    businessUnitEmailEl.value = data.businessUnitEmail || '';
+    rowIdEl.value = id;
+    currentRowId = id;
+
+    // Prefill attendees (Primary Business Unit contact name) if provided
+    attendeesEl.innerHTML = '';
+    if(data.primaryBusinessUnitName){
+      addAttendee(data.primaryBusinessUnitName);
+    } else {
+      addAttendee('');
+    }
+
+    renderDatesForVendor(data.vendor || '');
+    resultMsg.textContent = '';
+  }catch(err){
+    console.error(err);
+    resultMsg.textContent = 'Lookup failed: ' + (err.message || err);
+    // show minimal UI so user can contact you if needed
+  }
+}
+
+/* ---------- On load: read id from URL, perform lookup ---------- */
+(function init(){
+  const id = qparam('id');
+  if(!id){
+    resultMsg.textContent = 'Missing id parameter in URL. Please use the link you received.';
+    // create an empty attendee row to allow manual entry if needed
+    attendeesEl.innerHTML = '';
+    addAttendee('');
+    return;
+  }
+  // Store id in hidden field
+  rowIdEl.value = id;
+  // Kick off lookup (Power Automate)
+  performLookup(id);
+})();
+
+/* ---------- Add attendee button ---------- */
+addAttendeeBtn.addEventListener('click', ()=> addAttendee(''));
+
+/* ---------- Form submit ---------- */
+document.getElementById('svForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  resultMsg.textContent = '';
+  submitBtn.disabled = true;
+
+  const selectedDates = Array.from(document.querySelectorAll('input[name="availDate"]:checked')).map(n=>n.value);
+  if(selectedDates.length === 0){
+    resultMsg.textContent = 'Please select at least one available date.';
+    submitBtn.disabled = false;
+    return;
+  }
+
+  const attendees = getAttendees();
+  if(attendees.length === 0){
+    resultMsg.textContent = 'Please add at least one appointment attendee.';
+    submitBtn.disabled = false;
+    return;
+  }
+
+  const payload = {
+    id: rowIdEl.value || null,
+    accountName: accountNameEl.value || null,
+    storeNumber: storeNumberEl.value || null,
+    vendor: vendorHiddenEl.value || null,
+    businessUnitEmail: businessUnitEmailEl.value || null,
+    attendees: attendees,
+    selectedDates: selectedDates,
+    comments: commentsEl.value || '',
+    submittedAt: new Date().toISOString()
+  };
+
+  try{
+    resultMsg.textContent = 'Submitting...';
+    const resp = await fetch(SUBMIT_ENDPOINT_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ secret: SHARED_SECRET, data: payload })
+    });
+    if(!resp.ok){
+      const txt = await resp.text();
+      throw new Error(txt || resp.statusText);
+    }
+    // success
+    resultMsg.textContent = 'Submitted — thank you!';
+    // optionally clear form (leave read-only context)
+    Array.from(document.querySelectorAll('input[name="availDate"]:checked')).forEach(i=>i.checked=false);
+    // leave attendees for record; if you want to reset them uncomment:
+    // attendeesEl.innerHTML=''; addAttendee('');
+  }catch(err){
+    console.error(err);
+    resultMsg.textContent = 'Submission failed: ' + (err.message || err);
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
 </body>
 </html>
