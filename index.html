@@ -244,6 +244,8 @@ async function performLookup(id){
     accountNameEl.value = data.accountName || '';
     storeNumberEl.value = data.storeNumber || '';
     vendorHiddenEl.value = data.vendor || '';
+    businessUnitHiddenEl.value = data.primaryBusinessUnitName;
+    
     rowIdEl.value = id;
     currentRowId = id;
 
