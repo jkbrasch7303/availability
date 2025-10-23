@@ -5,6 +5,7 @@
   <meta name="robots" content="noindex,nofollow" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Store Visit Availability</title>
+  <link rel="icon" type="image/png" href="./cwwLogo.png">
   <style>
     :root {
       --brand: #0078D4;
@@ -16,7 +17,12 @@
     .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
     .card{width:100%;max-width:720px;background:var(--card-bg);border-radius:10px;box-shadow:0 8px 28px rgba(15,15,20,0.08);padding:26px}
     header{display:flex;align-items:center;gap:14px;margin-bottom:6px}
-    .brand-mark{width:46px;height:46px;border-radius:8px;background:linear-gradient(180deg,var(--brand),#005ea2);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px}
+    header img{
+      height: 48px;
+      width: 48px;
+      border-radius: 50%; /* ensures perfect circle */
+      object-fit: cover;
+    }
     h1{font-size:20px;color:var(--brand);margin:0 0 6px}
     p.lead{margin:0 0 14px;color:var(--muted);font-size:14px}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -48,7 +54,7 @@
   <div class="wrap">
     <div class="card" role="main" aria-labelledby="title">
       <header>
-        <div class="brand-mark">SV</div>
+        <img src="./cwwLogo.png" alt="Company Logo">
         <div>
           <h1 id="title">Store Visit Availability</h1>
           <p class="lead">Select the dates you are available for the store visit (next month). Only people with the link can access this page.</p>
@@ -99,7 +105,6 @@
         <!-- Hidden fields -->
         <input type="hidden" id="rowId" name="id">
         <input type="hidden" id="vendorHidden" name="vendor">
-        <input type="hidden" id="businessUnitEmail" name="businessUnitEmail">
       </form>
     </div>
   </div>
@@ -133,12 +138,13 @@ function qparam(name){
 const accountNameEl = document.getElementById('accountName');
 const storeNumberEl = document.getElementById('storeNumber');
 const attendeesEl = document.getElementById('attendees');
+attendeesEl.addEventListener('input', updateSubmitState);
 const addAttendeeBtn = document.getElementById('addAttendee');
 const datesContainer = document.getElementById('datesContainer');
+datesContainer.addEventListener('change', updateSubmitState);
 const commentsEl = document.getElementById('comments');
 const rowIdEl = document.getElementById('rowId');
 const vendorHiddenEl = document.getElementById('vendorHidden');
-const businessUnitEmailEl = document.getElementById('businessUnitEmail');
 const submitBtn = document.getElementById('submitBtn');
 const resultMsg = document.getElementById('resultMsg');
 const datesHelp = document.getElementById('datesHelp');
@@ -172,6 +178,12 @@ function getAttendees(){
   return Array.from(attendeesEl.querySelectorAll('input')).map(i=>i.value.trim()).filter(Boolean);
 }
 
+function updateSubmitState() {
+  const hasAttendee = getAttendees().length > 0;
+  const hasDate = document.querySelectorAll('input[name="availDate"]:checked').length > 0;
+  submitBtn.disabled = !(hasAttendee && hasDate);
+}
+
 /* ---------- Date generation ---------- */
 function getNextMonthDates(onlyTuesdays){
   const now = new Date();
@@ -181,11 +193,11 @@ function getNextMonthDates(onlyTuesdays){
   const last = new Date(year, nextMonthIndex + 1, 0);
   const arr = [];
   for(let d = new Date(first); d <= last; d.setDate(d.getDate()+1)){
-    const day = d.getDay(); // Sun 0 .. Sat 6
+    const day = d.getDay();
     if(onlyTuesdays){
       if(day === 2) arr.push(new Date(d));
     } else {
-      if(day !== 0 && day !== 6) arr.push(new Date(d)); // weekdays only
+      if(day !== 0 && day !== 6) arr.push(new Date(d));
     }
   }
   return arr;
@@ -196,7 +208,7 @@ function renderDatesForVendor(vendor){
   currentVendor = (vendor || '').toLowerCase();
   const isHomeDepot = currentVendor.includes('home depot product authority') || currentVendor.includes('home depot');
   const isLowes = currentVendor.includes("lowe") || currentVendor.includes("lowe's") || currentVendor.includes("lowes");
-  const onlyTues = isHomeDepot && !isLowes; // home depot -> tuesdays only; lowes -> any weekday
+  const onlyTues = isHomeDepot && !isLowes;
   const dates = getNextMonthDates(onlyTues);
   datesContainer.innerHTML = '';
   if(dates.length === 0){
@@ -240,7 +252,6 @@ async function performLookup(id){
     accountNameEl.value = data.accountName || '';
     storeNumberEl.value = data.storeNumber || '';
     vendorHiddenEl.value = data.vendor || '';
-    businessUnitEmailEl.value = data.businessUnitEmail || '';
     rowIdEl.value = id;
     currentRowId = id;
 
@@ -257,11 +268,14 @@ async function performLookup(id){
   }catch(err){
     console.error(err);
     resultMsg.textContent = 'Lookup failed: ' + (err.message || err);
-    // show minimal UI so user can contact you if needed
+    //minimal UI
   }
 }
 
 /* ---------- On load: read id from URL, perform lookup ---------- */
+  
+submitBtn.disabled = true;
+
 (function init(){
   const id = qparam('id');
   if(!id){
@@ -305,7 +319,6 @@ document.getElementById('svForm').addEventListener('submit', async function(e){
     accountName: accountNameEl.value || null,
     storeNumber: storeNumberEl.value || null,
     vendor: vendorHiddenEl.value || null,
-    businessUnitEmail: businessUnitEmailEl.value || null,
     attendees: attendees,
     selectedDates: selectedDates,
     comments: commentsEl.value || '',
