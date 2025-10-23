@@ -105,6 +105,7 @@
         <!-- Hidden fields -->
         <input type="hidden" id="rowId" name="id">
         <input type="hidden" id="vendorHidden" name="vendor">
+        <input type="hidden" id="businessUnitNameHidden" name="businessUnitName">
       </form>
     </div>
   </div>
@@ -135,6 +136,7 @@ datesContainer.addEventListener('change', updateSubmitState);
 const commentsEl = document.getElementById('comments');
 const rowIdEl = document.getElementById('rowId');
 const vendorHiddenEl = document.getElementById('vendorHidden');
+const businessUnitHiddenEl = document.getElementById('businessUnitNameHidden');
 const submitBtn = document.getElementById('submitBtn');
 const resultMsg = document.getElementById('resultMsg');
 const datesHelp = document.getElementById('datesHelp');
@@ -309,7 +311,7 @@ document.getElementById('svForm').addEventListener('submit', async function(e){
     accountName: accountNameEl.value || null,
     storeNumber: storeNumberEl.value || null,
     vendor: vendorHiddenEl.value || null,
-    businessUnitName: data.primaryBusinessUnitName || null,
+    businessUnitName: businessUnitHiddenEl.value || null,
     attendees: attendees,
     selectedDates: selectedDates,
     comments: commentsEl.value || '',
