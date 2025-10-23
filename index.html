@@ -110,20 +110,10 @@
   </div>
 
 <script>
-/* ============================
-   CONFIGURE THESE VALUES
-   ============================
-   Replace the placeholders below with:
-     - LOOKUP_ENDPOINT_URL : Power Automate HTTP (lookup) flow URL
-     - SUBMIT_ENDPOINT_URL : Power Automate HTTP (submit) flow URL
-     - SHARED_SECRET       : shared secret you will validate in the flow
-*/
+
 const LOOKUP_ENDPOINT_URL = "https://5f15d5cf879ae73ba9d099332330f0.08.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/365d294624734d54ba6e98c6ceb28c6b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UXB6lBpd8mHkxcSbzWreOqTMBFERAet9n2lEMHqRmg0";
-const SUBMIT_ENDPOINT_URL = "https://prod-00.westus.logic.azure.com:443/your-submit-flow-url"; // <-- REPLACE
+const SUBMIT_ENDPOINT_URL = "https://5f15d5cf879ae73ba9d099332330f0.08.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ed646e1e60d849c9afaec43f8e66d4ea/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9Wo8jV_E_juuRakVVtpIriqFGY79nSSYrOrRGBy38Z4";
 const SHARED_SECRET = "bzvP5Cd/lbqUvGOu9Qb+EOTrVyRLFTmw";
-/* ============================
-   End configuration
-   ============================ */
 
 function qparam(name){
   try{
